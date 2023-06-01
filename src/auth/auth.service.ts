@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
-import { LoginUserInput } from './dto/login-user-input';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -23,16 +24,10 @@ export class AuthService {
   }
 
   // Método para poder logearse como un usuario
-  async login(loginUserInput: LoginUserInput) {
-    // Traer a un usuario específico de la Mock DB
-    const user = await this.usersService.findOne(loginUserInput.username);
-
-    // Destructuar el objeto obtenido sin traer el campo 'password'
-    const { password, ...result } = user;
-
+  async login(user: User) {
     return {
       access_token: 'jwt',
-      user: result,
+      user: user,
     };
   }
 }
