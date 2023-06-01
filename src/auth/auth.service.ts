@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
+import { LoginUserInput } from './dto/login-user-input';
 
 @Injectable()
 export class AuthService {
@@ -19,5 +20,19 @@ export class AuthService {
     }
 
     return null;
+  }
+
+  // Método para poder logearse como un usuario
+  async login(loginUserInput: LoginUserInput) {
+    // Traer a un usuario específico de la Mock DB
+    const user = await this.usersService.findOne(loginUserInput.username);
+
+    // Destructuar el objeto obtenido sin traer el campo 'password'
+    const { password, ...result } = user;
+
+    return {
+      access_token: 'jwt',
+      user: result,
+    };
   }
 }
