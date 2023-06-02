@@ -2,11 +2,15 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/entities/user.entity';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   // Inyección de dependencias
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {}
 
   // Método para validar a el usuario a logear
   async validateUser(username: string, password: string): Promise<any> {
@@ -26,7 +30,10 @@ export class AuthService {
   // Método para poder logearse como un usuario
   async login(user: User) {
     return {
-      access_token: 'jwt',
+      access_token: this.jwtService.sign({
+        username: user.username,
+        sub: user.id,
+      }),
       user: user,
     };
   }
